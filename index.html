@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Search and Display</title>
+    <style>
+            html, body {
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                overflow: hidden; /* Hide scrollbars */
+            }
+
+            *, *:before, *:after {
+                box-sizing: border-box; /* Include padding and borders in the element's total width and height */
+            }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .left-column {
+            width: 30%;
+            padding: 20px;
+            background-color: #ffffff;
+            height: 100vh; /* Make the left column full height */
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .right-column {
+            width: 70%;
+            padding: 20px;
+            height: 100vh; /* Make the right column full height */
+            overflow-y: auto;
+            position: relative; /* Add position relative for absolute positioning inside */
+        }
+        .search-container {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="button"], input[type="reset"] {
+            padding: 10px;
+            margin-right: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[type="button"], input[type="reset"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="button"]:hover, input[type="reset"]:hover {
+            background-color: #0056b3;
+        }
+        .results-container, .chat-display {
+            margin-top: 20px;
+        }
+        .result {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e9e9e9;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .result:hover {
+            background-color: #d0d0d0;
+        }
+        .chat-display {
+            width: 100%;
+            height: calc(100% - 100px); /*Subtract top and bottom padding */
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="left-column">
+    <h2>Search</h2>
+    <div class="search-container">
+        <input type="text" id="searchBox" placeholder="Type the name of the chat">
+        <input type="button" value="Search" onclick="searchChats()">
+        <input type="reset" value="Reset" onclick="resetSearch()">
+    </div>
+    <div id="results" class="results-container"></div>
+</div>
+
+<div class="right-column">
+    <h2>Chat</h2>
+    <div id="chatDisplay" class="chat-display"></div>
+</div>
+
+<script src="web/chatList.js"></script>
+<script>
+    function searchChats() {
+        const searchQuery = document.getElementById('searchBox').value.toLowerCase();
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = ''; // Clear previous results
+
+        const filteredChats = chatFiles.filter(chat => chat.toLowerCase().includes(searchQuery));
+        
+        filteredChats.forEach(chat => {
+            const resultElement = document.createElement('div');
+            resultElement.classList.add('result');
+            resultElement.textContent = chat.replace('.html', ''); // Display without the .html extension
+            resultElement.onclick = function() {
+                loadChat(`formatted_chats_new/${chat}`);
+            };
+            resultsContainer.appendChild(resultElement);
+        });
+
+        if (filteredChats.length === 0) {
+            const noResultElement = document.createElement('div');
+            noResultElement.textContent = 'No results found';
+            resultsContainer.appendChild(noResultElement);
+        }
+    }
+
+    function resetSearch() {
+        document.getElementById('searchBox').value = '';
+        document.getElementById('results').innerHTML = '';
+        document.getElementById('chatDisplay').innerHTML = '';
+    }
+
+    function loadChat(url) {
+        const chatDisplay = document.getElementById('chatDisplay');
+        chatDisplay.innerHTML = `<iframe src="${url}" frameborder="0"></iframe>`;
+    }
+</script>
+
+</body>
+</html>

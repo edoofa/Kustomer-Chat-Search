@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .search-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input[type="text"], input[type="button"] {
+            padding: 10px;
+            margin-right: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[type="button"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        input[type="button"]:hover {
+            background-color: #0056b3;
+        }
+        .results-container {
+            margin-top: 20px;
+        }
+        .result {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e9e9e9;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .result:hover {
+            background-color: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="search-container">
+    <input type="text" id="searchBox" placeholder="Type the name of the chat">
+    <input type="button" value="Search" onclick="searchChats()">
+    <div id="results" class="results-container"></div>
+</div>
+
+<script src="chatList.js"></script>
+<script>
+    function searchChats() {
+        const searchQuery = document.getElementById('searchBox').value.toLowerCase();
+        const resultsContainer = document.getElementById('results');
+        resultsContainer.innerHTML = ''; // Clear previous results
+
+        const filteredChats = chatFiles.filter(chat => chat.toLowerCase().includes(searchQuery));
+        
+        filteredChats.forEach(chat => {
+            const resultElement = document.createElement('div');
+            resultElement.classList.add('result');
+            resultElement.textContent = chat.replace('.html', ''); // Display without the .html extension
+            resultElement.onclick = function() {
+                window.open(`../formatted_chats/${chat}`, '_blank'); // Ensure the path matches your directory structure
+            };
+            resultsContainer.appendChild(resultElement);
+        });
+
+        if (filteredChats.length === 0) {
+            const noResultElement = document.createElement('div');
+            noResultElement.textContent = 'No results found';
+            resultsContainer.appendChild(noResultElement);
+        }
+    }
+</script>
+
+</body>
+</html>
